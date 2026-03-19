@@ -21,7 +21,7 @@ public class Customer {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private KycStatus kycStatus;
+    private KycStatus kycStatus = KycStatus.PENDING;
 
     public Customer() {
     }
