@@ -1,31 +1,37 @@
 package com.bank.customer.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "customers")
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private KycStatus kycStatus;
 
     public Customer() {
     }
 
-    public Customer(Long id, String name, String email, String password) {
+    public Customer(Long id, String name, String email, String password, KycStatus kycStatus) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.kycStatus = kycStatus;
     }
 
     public Long getId() {
@@ -44,6 +50,10 @@ public class Customer {
         return password;
     }
 
+    public KycStatus getKycStatus() {
+        return kycStatus;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -58,5 +68,9 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setKycStatus(KycStatus kycStatus) {
+        this.kycStatus = kycStatus;
     }
 }
