@@ -4,6 +4,7 @@ import com.bank.customer.dto.CustomerRequest;
 import com.bank.customer.dto.CustomerResponse;
 import com.bank.customer.entity.Customer;
 import com.bank.customer.repository.CustomerRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
@@ -22,7 +24,7 @@ public class CustomerService {
         Customer customer = Customer.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .passwordHash(request.getPassword()) // still raw (fix next commit)
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         Customer saved = customerRepository.save(customer);
@@ -30,9 +32,11 @@ public class CustomerService {
         return mapToResponse(saved);
     }
 
-    public Optional<CustomerResponse> getCustomerByEmail(String email) {
-        return customerRepository.findByEmail(email)
-                .map(this::mapToResponse);
+    public CustomerResponse getCustomerByEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+
+        return mapToResponse(customer);
     }
 
     private CustomerResponse mapToResponse(Customer customer) {

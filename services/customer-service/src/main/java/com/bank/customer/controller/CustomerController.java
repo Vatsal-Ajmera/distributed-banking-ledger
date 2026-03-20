@@ -24,7 +24,8 @@ public class CustomerController {
     }
 
     @GetMapping("/{email}")
-    public Optional<CustomerResponse> getCustomerByEmail(@PathVariable String email) {
+    public CustomerResponse getCustomerByEmail(@PathVariable String email) {
         return customerService.getCustomerByEmail(email);
     }
+
 }
