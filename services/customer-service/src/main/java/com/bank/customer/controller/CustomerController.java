@@ -1,7 +1,9 @@
 package com.bank.customer.controller;
 
-import com.bank.customer.entity.Customer;
+import com.bank.customer.dto.CustomerRequest;
+import com.bank.customer.dto.CustomerResponse;
 import com.bank.customer.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -17,12 +19,12 @@ public class CustomerController {
     }
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.createCustomer(customer);
+    public CustomerResponse createCustomer(@Valid @RequestBody CustomerRequest request) {
+        return customerService.createCustomer(request);
     }
 
     @GetMapping("/{email}")
-    public Optional<Customer> getCustomerByEmail(@PathVariable String email) {
+    public Optional<CustomerResponse> getCustomerByEmail(@PathVariable String email) {
         return customerService.getCustomerByEmail(email);
     }
 }
