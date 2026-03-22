@@ -6,8 +6,6 @@ import com.bank.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -27,5 +25,4 @@ public class CustomerController {
     public CustomerResponse getCustomerByEmail(@PathVariable String email) {
         return customerService.getCustomerByEmail(email);
     }
-
 }
