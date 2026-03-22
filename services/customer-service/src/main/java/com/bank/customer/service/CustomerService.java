@@ -4,9 +4,11 @@ import com.bank.customer.dto.CustomerRequest;
 import com.bank.customer.dto.CustomerResponse;
 import com.bank.customer.entity.Customer;
 import com.bank.customer.exception.CustomerNotFoundException;
+import com.bank.customer.exception.DuplicateCustomerException;
 import com.bank.customer.repository.CustomerRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,18 +19,24 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // Idempotency store (simple version)
+    // Idempotency store (in-memory for now)
     private final Map<String, CustomerResponse> idempotencyStore = new HashMap<>();
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
+    @Transactional
     public CustomerResponse createCustomer(CustomerRequest request, String idempotencyKey) {
 
-        // 🔑 Check if already processed
+        // 🔑 Idempotency check
         if (idempotencyStore.containsKey(idempotencyKey)) {
             return idempotencyStore.get(idempotencyKey);
+        }
+
+        // 🔴 Business rule: prevent duplicate email
+        if (customerRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateCustomerException(request.getEmail());
         }
 
         Customer customer = Customer.builder()
@@ -41,12 +49,13 @@ public class CustomerService {
 
         CustomerResponse response = mapToResponse(saved);
 
-        // 🔑 Store result
+        // 🔑 Store idempotent result
         idempotencyStore.put(idempotencyKey, response);
 
         return response;
     }
 
+    @Transactional(readOnly = true)
     public CustomerResponse getCustomerByEmail(String email) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomerNotFoundException(email));
