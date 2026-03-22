@@ -17,9 +17,13 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerResponse createCustomer(@Valid @RequestBody CustomerRequest request) {
-        return customerService.createCustomer(request);
+    public CustomerResponse createCustomer(
+            @Valid @RequestBody CustomerRequest request,
+            @RequestHeader("X-Idempotency-Key") String idempotencyKey
+    ) {
+        return customerService.createCustomer(request, idempotencyKey);
     }
+
 
     @GetMapping("/{email}")
     public CustomerResponse getCustomerByEmail(@PathVariable String email) {
