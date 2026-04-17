@@ -1,65 +1,86 @@
 package com.bank.customer.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-@ControllerAdvice
+/**
+ * Global exception handler mapping domain and framework exceptions to standard {@link ErrorResponse}.
+ */
+@Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
-
-        response.put("errors", errors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleCustomerNotFound(CustomerNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleCustomerNotFound(
+            CustomerNotFoundException ex, HttpServletRequest request) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.NOT_FOUND.value());
-        response.put("message", ex.getMessage());
+        log.warn("Customer not found: {}", ex.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
-    @ExceptionHandler(DuplicateCustomerException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicateCustomer(DuplicateCustomerException ex) {
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(
+            DuplicateEmailException ex, HttpServletRequest request) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.CONFLICT.value());
-        response.put("message", ex.getMessage());
+        log.warn("Duplicate registration attempt");
 
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest request) {
+
+        log.warn("Data integrity violation (possible race condition): {}", ex.getMostSpecificCause().getMessage());
+
+        return buildResponse(HttpStatus.CONFLICT,
+                "A record with the provided data already exists", request);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException ex, HttpServletRequest request) {
+
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        log.warn("Validation failed: {}", message);
+
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleGenericException(
+            Exception ex, HttpServletRequest request) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        response.put("message", ex.getMessage());
+        log.error("Unexpected error", ex);
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred", request);
+    }
+
+    private ResponseEntity<ErrorResponse> buildResponse(
+            HttpStatus status, String message, HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(message)
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(status).body(body);
     }
 }

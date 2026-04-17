@@ -1,8 +1,11 @@
 package com.bank.customer.exception;
 
+/**
+ * Thrown when a customer cannot be found by ID or email.
+ */
 public class CustomerNotFoundException extends RuntimeException {
 
-    public CustomerNotFoundException(String email) {
-        super("Customer not found with email: " + email);
+    public CustomerNotFoundException(String message) {
+        super(message);
     }
 }
