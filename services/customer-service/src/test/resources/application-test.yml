@@ -1,0 +1,28 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Test profile — loaded automatically during integration tests.
+#
+# The actual datasource URL / username / password are injected at runtime
+# by @DynamicPropertySource in CustomerRepositoryTest via Testcontainers.
+# This file only overrides settings that would conflict in a test environment.
+# ─────────────────────────────────────────────────────────────────────────────
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+
+logging:
+  level:
+    com.bank.customer: DEBUG
+    org.flywaydb: INFO
+    org.hibernate.SQL: WARN
