@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f0436138-a0ba-4b43-95b6-a979f0fcbd24" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/DuplicateEmailException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/dto/CustomerRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/dto/CustomerRegistrationRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/dto/CustomerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/dto/CustomerResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/entity/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/CustomerNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/CustomerNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/DuplicateCustomerException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/java/com/bank/customer/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/customer-service/src/main/resources/db/migration/V1_create_customer_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/src/main/resources/db/migration/V1_create_customer_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/customer-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/customer-service/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +76,8 @@
       <workItem from="1773400445935" duration="4810000" />
       <workItem from="1773922547311" duration="4304000" />
       <workItem from="1774003578976" duration="9036000" />
-      <workItem from="1776419569721" duration="1684000" />
+      <workItem from="1776419569721" duration="3701000" />
+      <workItem from="1776778433716" duration="2040000" />
     </task>
     <servers />
   </component>
