@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        Root aggregator POM for the Distributed Banking Ledger.
+        This POM does NOT extend spring-boot-starter-parent — each service
+        manages its own parent to keep service POMs independently releasable.
+
+        Purpose:
+          - Single entry point: `mvn clean test` builds every service at once
+          - Centralises shared properties (Java version, encoding)
+          - New services are added as <module> entries here + their own pom.xml
+
+        Usage:
+          mvn clean test              # test all services
+          mvn clean test -pl services/customer-service   # test one service only
+    -->
+
+    <groupId>com.bank</groupId>
+    <artifactId>distributed-banking-ledger</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Distributed Banking Ledger</name>
+    <description>
+        Production-style event-driven microservices banking backend.
+        Java 21 · Spring Boot 3 · PostgreSQL · Kafka (KRaft)
+    </description>
+
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <!-- ─── Child services ──────────────────────────────────────────────── -->
+    <modules>
+        <module>services/customer-service</module>
+        <!-- future: services/account-service  -->
+        <!-- future: services/transfer-service -->
+    </modules>
+
+    <!-- ─── Build plugin management (applies across all modules) ────────── -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                    <configuration>
+                        <release>${java.version}</release>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
